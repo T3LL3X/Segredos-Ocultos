@@ -1,0 +1,247 @@
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.1">
+<title>Segredos ocultos</title>
+
+<style>
+:root{
+    --fundo:#000000;
+    --caixa_de_texto_pika:#000000;
+    --Botão_massa:#fffcfc;
+    --botão_massa_2:#d6cece;
+    --texto_insano: #920b0b;
+    --texto_insano_2: #ffffff;
+    --nome_itens:#f5ecec;
+    --texto_principal:#df0000;
+}
+
+body{
+    margin:0;
+    font-family:Segoe UI, Trebucet MS, sans-serif;
+    background:var(--fundo);
+    color:var(--texto_insano);
+}
+
+header{
+    background: url(logo.png) no-repeat center;
+    background-size: 200px;
+    height: 90px;
+    padding-top:  10px;
+    padding-bottom: 10px;
+}
+
+.container{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px,1fr));
+    gap:15px;
+    padding:20px;
+}
+
+.card{
+    background:var(--caixa_de_texto_pika);
+    border-radius:16px;
+    padding:15px;
+    box-shadow:0 0 15px rgba(0,255,156,0.05);
+}
+
+.card h2{
+    margin-top:0;
+    font-size:18px;
+    color:var(--texto_insano);
+}
+
+.card h3{
+    background:var(--caixa_de_texto_pika);
+    border-radius:16px;
+}
+
+label{
+    font-size:12px;
+    color:var(--nome_itens);
+}
+
+input, textarea{
+    width:100%;
+    background:#0c0f13;
+    border:1px solid #000000;
+    color:var(--texto_insano_2);
+    padding:6px;
+    border-radius:6px;
+    margin-bottom:8px;
+}
+
+.grid-attrs{
+    display:grid;                                      
+    grid-template-columns: repeat(5,1fr);
+    gap:8px;
+}
+
+.attr-box{
+    text-align:center;
+}
+
+.skills{
+    columns:2;
+}
+
+button{
+    width:100%;
+    padding:10px;
+    background:var(--texto_insano);
+    border:1px solid #fffdfd;
+    border-radius:30px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.footer{
+    text-align:center;
+    padding:10px;
+    font-size:12px;
+    color:var(--texto_principal);
+}
+
+</style>
+</head>
+
+<body>
+
+<header></header>
+
+<div class="container">
+
+<div class="card">
+<h2>Informações</h2>
+<label>Nome</label><input id="nome">
+<label>Origem</label><input id="origem">
+<label>Classe</label><input id="classe">
+</div>
+
+<div class="card">
+<h2>Status</h2>
+<label>Afinidade</label><input id="afi">
+<label>PV</label><input id="pv">
+<label>PE</label><input id="pe">
+<label>Sanidade</label><input id="san">
+<label>Defesa</label><input id="def">
+<label>Movimento</label><input id="mov">
+</div>
+
+<div class="card">
+<h2>Atributos</h2>
+<div class="grid-attrs">
+<div class="attr-box">FOR<select id="for"></div>
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+</select></div>
+<div class="attr-box">DEX<select id="dex"></div>
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+</select></div>
+<div class="attr-box">CON<select id="con"></div>
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+</select></div>
+<div class="attr-box">INT<select id="int"></div>
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+</select></div>
+<div class="attr-box">CAR<select id="car"></div>
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+</select></div>
+</div>
+</div>
+
+<div class="card">
+<h3>Perícias</h3>
+<div class="skills">
+<label>Aracanismo</label><input id="aracanismo">
+<label>Artes</label><input id="artes">
+<label>Atletismo</label><input id="atletismo">
+<label>Ciência</label><input id="ciencia">
+<label>Crimes</label><input id="crimes">
+<label>Diplomacia</label><input id="diplomacia">
+<label>Enganação</label><input id="enganação">
+<label>Fortitude</label><input id="fortitude">
+<label>Furtividade</label><input id="furtividade">
+<label>História</label><input id="historia">
+<label>Iniciativa</label><input id="iniciativa">
+<label>Intimidação</label><input id="intimidação">
+<label>Intuição</label><input id="intuição">
+<label>Investigação</label><input id="investigacao">
+<label>Luta</label><input id="luta">
+<label>Medicina</label><input id="medicina">
+<label>Percepção</label><input id="percepcao">
+<label>Pilotagem</label><input id="pilotagem">
+<label>Planejamento</label><input id="planejamento">
+<label>Pontaria</label><input id="pontaria">
+<label>Reflexos</label><input id="reflexos">
+<label>Religião</label><input id="religiao">
+<label>Sobrevivência</label><input id="sobrevivência">
+<label>Tecnologia</label><input id="tecnologia">
+<label>Vontade</label><input id="vontade">
+</div>
+</div>
+
+<div class="card">
+<h2>Equipamentos</h2>
+<textarea id="equipamentos" rows="6"></textarea>
+</div>
+
+<div class="card">
+<h2>Habilidades</h2>
+<textarea id="habilidades" rows="6"></textarea>
+</div>
+
+<div class="card">
+<h2>Ações</h2>
+<button onclick="salvar()">Salvar</button>
+<button onclick="carregar()">Carregar</button>
+<button onclick="limpar()">Limpar</button>
+</div>
+
+</div>
+
+<div class="footer">V1 da ficha por Gleibson e Vini</div>
+
+<script>
+const campos = document.querySelectorAll('input, textarea');
+
+function salvar(){
+    campos.forEach(c => localStorage.setItem(c.id, c.value));
+}
+
+function carregar(){
+    campos.forEach(c => c.value = localStorage.getItem(c.id) || '');
+}
+
+function limpar(){
+    campos.forEach(c => {
+        c.value = '';
+        localStorage.removeItem(c.id);
+    });
+}
+
+window.onload = carregar;
+</script>
+
+
+</body>
+</html>
