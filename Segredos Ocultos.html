@@ -409,162 +409,84 @@ button:active{
 <div class="footer">V1 da ficha por Gleibson e Vini</div>
 
 <script>
-const campos = document.querySelectorAll('input, textarea');
+const PER=['Arcanismo','Artes','Atletismo','Ciências','Crime','Diplomacia','Enganação','Fortitude','Furtividade','História','Iniciativa','Intimidação','Intuição','Investigação','Luta','Medicina','Percepção','Pilotagem','Planejamento','Pontaria','Reflexos','Religião','Sobrevivência','Tecnologia','Vontade'];
+const ATR=['Força','Destreza','Constituição','Inteligência','Carisma'];
+let idx=null;
+const load=()=>JSON.parse(localStorage.getItem('so_v3')||'[]');
+const save=d=>localStorage.setItem('so_v3',JSON.stringify(d));
 
-function salvar(){
-    const dados = {};
-    campos.forEach(c => dados[c.id] = c.value);
-    localStorage.setItem("ficha", JSON.stringify(dados));
+function novo(){
+ const nome=prompt('Nome'); if(!nome)return;
+ const senha=prompt('Senha')||'';
+ let a={}; ATR.forEach(x=>a[x]=1);
+ let p={}; PER.forEach(x=>p[x]=0);
+ let ch={nome,senha,classe:'',subclasse:'',afinidade:0,atributos:a,pericias:p,pvAtual:12,peAtual:9,sanAtual:8,inventario:'',diario:''};
+ let d=load(); d.push(ch); save(d); render();
 }
-
-function carregar(){
-    const dados = JSON.parse(localStorage.getItem("ficha") || "{}");
-    campos.forEach(c => c.value = dados[c.id] || '');
-
-    atualizarBarra('pv');
-    atualizarBarra('pe');
-    atualizarBarra('san');
+function render(){
+ slots.innerHTML='';
+ load().forEach((c,i)=>{
+ let div=document.createElement('div');
+ div.className='slot';
+ div.innerHTML=`${c.nome} <button>Abrir</button>`;
+ div.querySelector('button').onclick=()=>abrir(i);
+ slots.appendChild(div);
+ });
 }
-
-function limpar(){
-    campos.forEach(c => c.value = '');
-    localStorage.removeItem("ficha");
-
-    atualizarBarra('pv');
-    atualizarBarra('pe');
-    atualizarBarra('san');
+function abrir(i){
+ let d=load(); if(prompt('Senha')!==d[i].senha)return alert('Senha incorreta');
+ idx=i; landing.classList.add('hidden'); ficha.classList.remove('hidden'); preencher();
 }
-
-function textoMaluco(texto){
-    const chars = "!@#$%¨&*()_+=-?<>/[]{}ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    return texto.split("").map(l => {
-        if(Math.random() < 0.3){
-            return chars[Math.floor(Math.random() * chars.length)];
-        }
-        return l;
-    }).join("");
+function preencher(){
+ let c=load()[idx];
+ tituloFicha.textContent=c.nome;
+ nome.value=c.nome; classe.value=c.classe; subclasse.value=c.subclasse;
+ afinidade.value=c.afinidade; afinTxt.textContent=c.afinidade+'%';
+ atributos.innerHTML='';
+ Object.keys(c.atributos).forEach(k=>{
+  let e=document.createElement('div');
+  e.innerHTML=`${k}: <input type='number' value='${c.atributos[k]}' data-a='${k}'>`;
+  atributos.appendChild(e);
+ });
+ pericias.innerHTML='';
+ PER.forEach(k=>{
+  let e=document.createElement('div');
+  e.innerHTML=`${k}: <input type='number' value='${c.pericias[k]}' data-p='${k}'>`;
+  pericias.appendChild(e);
+ });
+ inventario.value=c.inventario; diario.value=c.diario;
+ recalcular();
 }
-
-function atualizarBarra(id){
-    const valor = parseInt(document.getElementById(id).value) || 0;
-
-    const barra = document.getElementById(id + "-bar");
-    const texto = document.getElementById(id + "-text");
-
-    const max = 100;
-
-    let porcentagem = (valor / max) * 100;
-    if(porcentagem > 100) porcentagem = 100;
-
-    barra.style.width = porcentagem + "%";
-    texto.innerText = valor;
-
-    // brilho crítico
-    if(porcentagem <= 25){
-        barra.style.filter = "brightness(1.6)";
-    } else {
-        barra.style.filter = "none";
-    }
-
-    const estadoEl = document.getElementById(id + "-estado");
-    if(!estadoEl) return;
-
-    let estado = "";
-    let classe = "";
-
-    // === PV ===
-    if(id === "pv"){
-        if(porcentagem > 50){
-            estado = "Estável";
-            classe = "estavel";
-        }
-        else if(porcentagem > 15){
-            estado = "Ferido";
-            classe = "ferido";
-        }
-        else if(porcentagem > 0){
-            estado = "Gravemente Ferido";
-            classe = "grave";
-        }
-        else{
-            estado = "Incapacitado";
-            classe = "morrendo";
-        }
-    }
-
-    // === PE ===
-    if(id === "pe"){
-        if(porcentagem > 50){
-            estado = "Disposto";
-            classe = "estavel";
-        }
-        else if(porcentagem > 15){
-            estado = "Cansado";
-            classe = "ferido";
-        }
-        else if(porcentagem > 0){
-            estado = "Exausto";
-            classe = "grave";
-        }
-        else{
-            estado = "Incapacitado";
-            classe = "morrendo";
-        }
-    }
-
-    // === SANIDADE ===
-    if(id === "san"){
-        if(porcentagem > 50){
-            estado = "Estável";
-            classe = "estavel";
-        }
-        else if(porcentagem > 15){
-            estado = "Louco";
-            classe = "ferido";
-        }
-        else if(porcentagem > 0){
-            estado = "INSANO";
-            classe = "grave";
-
-            if(!estadoEl.dataset.loop){
-                estadoEl.dataset.loop = true;
-
-                setInterval(() => {
-                    estadoEl.innerText = textoMaluco("INSANO");
-                }, 120);
-            }
-        }
-        else{
-            estado = "Colapso";
-            classe = "morrendo";
-        }
-    }
-
-    if(id !== "san" || porcentagem > 15){
-        estadoEl.innerText = estado;
-    }
-
-    estadoEl.className = "estado " + classe;
+function recalcular(){
+ let con=+document.querySelector("[data-a='Constituição']").value||1;
+ let dex=+document.querySelector("[data-a='Destreza']").value||1;
+ let intel=+document.querySelector("[data-a='Inteligência']").value||1;
+ let car=+document.querySelector("[data-a='Carisma']").value||1;
+ let fort=+document.querySelector("[data-p='Fortitude']").value||0;
+ pvMax.textContent=10+(con*2)+fort;
+ peMax.textContent=7+dex+intel;
+ sanMax.textContent=5+(intel*2)+car;
+ def.textContent=10+con;
+ let a=+afinidade.value; afinTxt.textContent=a+'%';
+ let est='Desconectado';
+ if(a>=5)est='Contato'; if(a>=20)est='Sensível'; if(a>=35)est='Canalização';
+ if(a>=50)est='Manifestação'; if(a>=65)est='Sintonização';
+ if(a>=80)est='Ressonância'; if(a>=100)est='Transgressão'; if(a>=110)est='Compreensão';
+ estagio.textContent=est;
 }
-/* RIPPLE */
-document.querySelectorAll("button").forEach(btn => {
-    btn.addEventListener("click", function(e){
-        const ripple = document.createElement("span");
-        ripple.classList.add("ripple");
-
-        const rect = btn.getBoundingClientRect();
-        ripple.style.left = (e.clientX - rect.left) + "px";
-        ripple.style.top = (e.clientY - rect.top) + "px";
-
-        btn.appendChild(ripple);
-        setTimeout(() => ripple.remove(), 600);
-    });
-});
-
-/* INICIALIZAÇÃO */
-window.onload = function(){
-    carregar();
+novo.onclick=novo;
+voltar.onclick=()=>{ficha.classList.add('hidden');landing.classList.remove('hidden');render();};
+salvar.onclick=()=>{
+ let d=load(), c=d[idx];
+ c.nome=nome.value;c.classe=classe.value;c.subclasse=subclasse.value;c.afinidade=+afinidade.value;
+ c.pvAtual=+pvAtual.value||0;c.peAtual=+peAtual.value||0;c.sanAtual=+sanAtual.value||0;
+ c.inventario=inventario.value;c.diario=diario.value;
+ document.querySelectorAll('[data-a]').forEach(x=>c.atributos[x.dataset.a]=+x.value);
+ document.querySelectorAll('[data-p]').forEach(x=>c.pericias[x.dataset.p]=+x.value);
+ save(d); alert('Salvo');
 };
+document.addEventListener('input',e=>{if(ficha.classList.contains('hidden'))return;recalcular();});
+render();
 </script>
 
 </body>
