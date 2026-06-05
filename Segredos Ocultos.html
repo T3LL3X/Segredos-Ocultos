@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Segredos Ocultos</title>
+
+<style>
+:root{
+    --fundo:#000000;
+    --caixa:#0a0a0d;
+    --caixa2:#111217;
+    --borda:#2a0b0b;
+    --texto1:#c21b1b;
+    --texto2:#ffffff;
+    --nome:#f5ecec;
+    --principal:#df0000;
+    --muted:#a9a3a3;
+}
+
+*{ box-sizing:border-box; }
+
+body{
+    margin:0;
+    font-family: Segoe UI, Trebuchet MS, sans-serif;
+    background:
+        radial-gradient(circle at top, rgb(0, 0, 0), transparent 50%),
+        linear-gradient(150deg, #740101, #000000 70%);
+    color:var(--texto1);
+}
+
+header{
+    background: url(logo.png) no-repeat center;
+    background-size: 200px;
+    height: 130px;
+    background-color:#00000000;
+}
+
+.container{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(310px,1fr));
+    gap:15px;
+    padding:20px;
+}
+
+.card{
+    background:linear-gradient(180deg, var(--caixa), #050505);
+    border:1px solid var(--borda);
+    border-radius:8px;
+    padding:15px;
+    box-shadow:0 0 20px rgba(255,0,0,0.08);
+}
+
+h2{
+    margin:0 0 12px;
+    color:var(--texto1);
+    font-size:18px;
+}
+
+label{
+    display:block;
+    font-size:12px;
+    color:var(--nome);
+    margin-bottom:4px;
+}
+
+input, textarea, select{
+    width:100%;
+    background:#0c0f13;
+    border:1px solid #252525;
+    color:var(--texto2);
+    padding:7px;
+    border-radius:6px;
+    margin-bottom:9px;
+    font:inherit;
+}
+
+input:focus, textarea:focus, select:focus{
+    outline:none;
+    border:1px solid red;
+    box-shadow:0 0 5px red;
+}
+
+textarea{ resize:vertical; }
+
+.grid-attrs{
+    display:grid;
+    grid-template-columns: repeat(5,1fr);
+    gap:8px;
+}
+
+.attr-box input{
+    text-align:center;
+    font-weight:bold;
+}
+
+.skills{
+    columns:2;
+    column-gap:18px;
+}
+
+.skill-field{
+    break-inside:avoid;
+    margin-bottom:8px;
+}
+
+.skill-field.hidden-skill{
+    display:none;
+}
+
+.edit-toggle{
+    margin-top:8px;
+}
+
+.edit-toggle.active{
+    background: radial-gradient(circle at 30% 30%, #ffffff, #b90000);
+    color:#090909;
+    border-color:#fff;
+}
+
+.danger-action{
+    margin-top:18px;
+}
+
+input:disabled, textarea:disabled, select:disabled{
+    opacity:.72;
+    cursor:not-allowed;
+}
+
+.status-box{
+    margin-bottom:14px;
+}
+
+.status-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+}
+
+.estado{
+    font-size:12px;
+    font-weight:bold;
+    padding:2px 6px;
+    border-radius:8px;
+    color:#000;
+    white-space:nowrap;
+}
+
+.estado.estavel{ background:#2ecc71; }
+.estado.ferido{ background:#f1c40f; }
+.estado.grave{ background:#e67e22; }
+.estado.morrendo{ background:#e74c3c; color:#fff; }
+
+.bar-container{
+    position:relative;
+    width:100%;
+    height:23px;
+    background:#1a1a1a;
+    border-radius:12px;
+    overflow:hidden;
+    margin-bottom:7px;
+    box-shadow: inset 0 0 6px #000;
+}
+
+.bar-fill{
+    height:100%;
+    width:100%;
+    transition: width 0.25s ease, filter 0.25s ease;
+}
+
+.bar-fill.pv{ background: linear-gradient(90deg, #d40000, #ff4d4d); }
+.bar-fill.pe{ background: linear-gradient(90deg, #1a75ff, #4da6ff); }
+.bar-fill.san{ background: linear-gradient(90deg, #7c25db, #cc66ff); }
+
+.bar-text{
+    position:absolute;
+    inset:0;
+    text-align:center;
+    font-size:13px;
+    font-weight:bold;
+    line-height:23px;
+    color:white;
+    text-shadow:0 0 4px black;
+}
+
+.status-inputs{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+}
+
+.status-buttons{
+    display:grid;
+    grid-template-columns: repeat(4,1fr);
+    gap:5px;
+}
+
+.calc-grid{
+    display:grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap:8px;
+}
+
+.calc-result{
+    display:grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap:8px;
+    margin-top:8px;
+}
+
+.apply-max-btn{
+    margin-top:14px;
+}
+
+.result-box{
+    background:var(--caixa2);
+    border:1px solid #2b2b2b;
+    border-radius:6px;
+    padding:8px;
+    text-align:center;
+}
+
+.result-box span{
+    display:block;
+    color:var(--muted);
+    font-size:11px;
+}
+
+.result-box strong{
+    color:#fff;
+    font-size:20px;
+}
+
+button{
+    width:100%;
+    min-height:35px;
+    padding:8px 10px;
+    background: radial-gradient(circle at 30% 30%, #ff1a1a, #920b0b);
+    border:1px solid #ff4d4d;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:bold;
+    color:white;
+    position:relative;
+    overflow:hidden;
+    box-shadow:0 0 10px rgba(255,0,0,0.28), inset 0 0 10px rgba(0,0,0,0.8);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+button:hover{
+    transform: translateY(-1px);
+    box-shadow:0 0 20px rgba(255,0,0,0.6), inset 0 0 15px rgba(0,0,0,0.9);
+}
+
+button:active{ transform: scale(0.98); }
+
+.button-row{
+    display:grid;
+    grid-template-columns: repeat(2, minmax(0,1fr));
+    gap:8px;
+}
+
+.ripple{
+    position:absolute;
+    width:10px;
+    height:10px;
+    background: rgba(255,255,255,0.6);
+    border-radius:50%;
+    transform: scale(0);
+    animation: rippleEffect 0.6s linear;
+    pointer-events:none;
+}
+
+@keyframes rippleEffect{
+    to{ transform: scale(15); opacity:0; }
+}
+
+.footer{
+    text-align:center;
+    padding:10px 10px 18px;
+    font-size:12px;
+    color:var(--principal);
+}
+
+@media (max-width:700px){
+    .grid-attrs{ grid-template-columns:repeat(2,1fr); }
+    .skills{ columns:1; }
+    .calc-result{ grid-template-columns:repeat(2,1fr); }
+}
+</style>
+</head>
+
+<body>
+<header></header>
+
+<main class="container">
+    <section class="card">
+        <h2>Informações</h2>
+        <label for="nome">Nome</label><input id="nome">
+        <label for="origem">Origem</label><input id="origem">
+        <label for="classe">Classe</label>
+        <select id="classe">
+            <option>Guerreiro</option>
+            <option>Atirador</option>
+            <option>Ritualista</option>
+            <option>Analista</option>
+        </select>
+        <label for="afinidade">Afinidade</label>
+        <select id="afinidade"></select>
+    </section>
+
+    <section class="card">
+        <h2>Atributos</h2>
+        <div class="calc-grid">
+            <div><label for="for">FOR</label><input id="for" type="number" value="1"></div>
+            <div><label for="dex">DEX</label><input id="dex" type="number" value="2"></div>
+            <div><label for="con">CON</label><input id="con" type="number" value="3"></div>
+            <div><label for="int">INT</label><input id="int" type="number" value="4"></div>
+            <div><label for="car">CAR</label><input id="car" type="number" value="5"></div>
+        </div>
+        <div class="calc-result">
+            <div class="result-box"><span>PV Máx</span><strong id="pvMaxView">0</strong></div>
+            <div class="result-box"><span>PE Máx</span><strong id="peMaxView">0</strong></div>
+            <div class="result-box"><span>SAN Máx</span><strong id="sanMaxView">0</strong></div>
+            <div class="result-box"><span>DEF</span><strong id="defView">0</strong></div>
+        </div>
+        <button class="apply-max-btn" onclick="aplicarMaximos()">Aplicar máximos calculados</button>
+    </section>
+
+    <section class="card">
+        <h2>Status</h2>
+        <div class="status-box">
+            <div class="status-top"><label>PV</label><span id="pv-estado" class="estado"></span></div>
+            <div class="bar-container">
+                <div id="pv-bar" class="bar-fill pv"></div>
+                <span id="pv-text" class="bar-text">0 / 0</span>
+            </div>
+            <div class="status-inputs">
+                <div><label for="pv">Atual</label><input id="pv" type="number" value="0"></div>
+                <div><label for="pvMax">Máximo</label><input id="pvMax" type="number" value="0"></div>
+            </div>
+            <div class="status-buttons">
+                <button onclick="alterar('pv', -5)">-5</button>
+                <button onclick="alterar('pv', -1)">-1</button>
+                <button onclick="alterar('pv', 1)">+1</button>
+                <button onclick="alterar('pv', 5)">+5</button>
+            </div>
+        </div>
+
+        <div class="status-box">
+            <div class="status-top"><label>PE</label><span id="pe-estado" class="estado"></span></div>
+            <div class="bar-container">
+                <div id="pe-bar" class="bar-fill pe"></div>
+                <span id="pe-text" class="bar-text">0 / 0</span>
+            </div>
+            <div class="status-inputs">
+                <div><label for="pe">Atual</label><input id="pe" type="number" value="0"></div>
+                <div><label for="peMax">Máximo</label><input id="peMax" type="number" value="0"></div>
+            </div>
+            <div class="status-buttons">
+                <button onclick="alterar('pe', -5)">-5</button>
+                <button onclick="alterar('pe', -1)">-1</button>
+                <button onclick="alterar('pe', 1)">+1</button>
+                <button onclick="alterar('pe', 5)">+5</button>
+            </div>
+        </div>
+
+        <div class="status-box">
+            <div class="status-top"><label>Sanidade</label><span id="san-estado" class="estado"></span></div>
+            <div class="bar-container">
+                <div id="san-bar" class="bar-fill san"></div>
+                <span id="san-text" class="bar-text">0 / 0</span>
+            </div>
+            <div class="status-inputs">
+                <div><label for="san">Atual</label><input id="san" type="number" value="0"></div>
+                <div><label for="sanMax">Máximo</label><input id="sanMax" type="number" value="0"></div>
+            </div>
+            <div class="status-buttons">
+                <button onclick="alterar('san', -5)">-5</button>
+                <button onclick="alterar('san', -1)">-1</button>
+                <button onclick="alterar('san', 1)">+1</button>
+                <button onclick="alterar('san', 5)">+5</button>
+            </div>
+        </div>
+        <label for="def">Defesa</label><input id="def" type="number">
+        <label for="mov">Movimento</label><input id="mov">
+    </section>
+
+    <section class="card">
+        <h2>Perícias</h2>
+        <div class="skills">
+            <label>Arcanismo</label><input id="arcanismo">
+            <label>Artes</label><input id="artes">
+            <label>Atletismo</label><input id="atletismo">
+            <label>Ciência</label><input id="ciencia">
+            <label>Crimes</label><input id="crimes">
+            <label>Diplomacia</label><input id="diplomacia">
+            <label>Enganação</label><input id="enganacao">
+            <label for="periciaFortitude">Fortitude</label><input id="periciaFortitude" type="number" value="0">
+            <label>Furtividade</label><input id="furtividade">
+            <label>História</label><input id="historia">
+            <label>Iniciativa</label><input id="iniciativa">
+            <label>Intimidação</label><input id="intimidacao">
+            <label>Intuição</label><input id="intuicao">
+            <label>Investigação</label><input id="investigacao">
+            <label>Luta</label><input id="luta">
+            <label>Medicina</label><input id="medicina">
+            <label>Percepção</label><input id="percepcao">
+            <label>Pilotagem</label><input id="pilotagem">
+            <label>Planejamento</label><input id="planejamento">
+            <label>Pontaria</label><input id="pontaria">
+            <label>Reflexos</label><input id="reflexos">
+            <label>Religião</label><input id="religiao">
+            <label>Sobrevivência</label><input id="sobrevivencia">
+            <label>Tecnologia</label><input id="tecnologia">
+            <label>Vontade</label><input id="vontade">
+        </div>
+    </section>
+
+    <section class="card">
+        <h2>Equipamentos</h2>
+        <textarea id="equipamentos" rows="6"></textarea>
+    </section>
+
+    <section class="card">
+        <h2>Habilidades</h2>
+        <textarea id="habilidades" rows="6"></textarea>
+    </section>
+
+    <section class="card">
+        <h2>Anotações</h2>
+        <textarea id="anotacoes" rows="6"></textarea>
+    </section>
+
+    <section class="card">
+        <h2>Ações</h2>
+        <div class="button-row">
+            <button onclick="salvar()">Salvar</button>
+            <button onclick="carregar()">Carregar</button>
+            <button onclick="exportarFicha()">Exportar</button>
+            <button onclick="importarFicha()">Importar</button>
+        </div>
+        <button id="editarBtn" class="edit-toggle" onclick="alternarEdicao()" aria-pressed="false">Editar</button>
+        <button class="danger-action" onclick="limpar()">Limpar</button>
+        <input id="arquivoImportacao" type="file" accept="application/json" hidden>
+    </section>
+</main>
+
+<div class="footer">V2 da ficha por Gleibson e Vini</div>
+
+<script>
+const STORAGE_KEY = "segredos-ocultos-ficha-v2";
+const PERICIA_BONUS = [0, 5, 10, 15, 20, 25];
+const periciaIds = [
+    "arcanismo", "artes", "atletismo", "ciencia", "crimes", "diplomacia",
+    "enganacao", "periciaFortitude", "furtividade", "historia", "iniciativa",
+    "intimidacao", "intuicao", "investigacao", "luta", "medicina", "percepcao",
+    "pilotagem", "planejamento", "pontaria", "reflexos", "religiao",
+    "sobrevivencia", "tecnologia", "vontade"
+];
+
+function prepararPericias(){
+    periciaIds.forEach(id => {
+        const campo = document.getElementById(id);
+        if(!campo || campo.tagName === "SELECT") return;
+
+        const label = document.querySelector(`label[for="${id}"]`) || campo.previousElementSibling;
+        const wrapper = document.createElement("div");
+        wrapper.className = "skill-field";
+        wrapper.dataset.skillId = id;
+
+        const select = document.createElement("select");
+        select.id = id;
+        const valorInicial = Number(campo.value) || 0;
+
+        PERICIA_BONUS.forEach(valor => {
+            const option = document.createElement("option");
+            option.value = String(valor);
+            option.textContent = valor === 0 ? "0" : `+${valor}`;
+            select.appendChild(option);
+        });
+        select.value = PERICIA_BONUS.includes(valorInicial) ? String(valorInicial) : "0";
+
+        campo.replaceWith(select);
+        if(label){
+            label.setAttribute("for", id);
+            label.before(wrapper);
+            wrapper.appendChild(label);
+        } else {
+            select.before(wrapper);
+        }
+        wrapper.appendChild(select);
+    });
+}
+
+prepararPericias();
+const campos = [...document.querySelectorAll("input, textarea, select")].filter(c => c.id !== "arquivoImportacao");
+const statusIds = ["pv", "pe", "san"];
+const camposStatusLiberados = ["pv", "pe", "san", "def", "mov"];
+const aplicarMaximosBtn = document.querySelector('button[onclick="aplicarMaximos()"]');
+let modoEdicao = false;
+const classeGanhos = {
+    Guerreiro: { pv: { base: 5, attr: "con" }, pe: { base: 2, attr: "dex" }, san: { base: 1, attr: "car" } },
+    Atirador: { pv: { base: 3, attr: "con" }, pe: { base: 4, attr: "dex" }, san: { base: 2, attr: "car" } },
+    Ritualista: { pv: { base: 2, attr: "con" }, pe: { base: 5, attr: "dex" }, san: { base: 3, attr: "car" } },
+    Analista: { pv: { base: 3, attr: "con" }, pe: { base: 4, attr: "dex" }, san: { base: 4, attr: "car" } }
+};
+const bonusInicial = {
+    pv: { base: 5, attr: "con" },
+    pe: { base: 5, attr: "dex" },
+    san: { base: 3, attr: "car" }
+};
+
+let intervaloInsano = null;
+
+function preencherAfinidades(){
+    const select = document.getElementById("afinidade");
+    for(let i = 0; i <= 22; i++){
+        const valor = (i * 0.05).toFixed(2);
+        const option = document.createElement("option");
+        option.value = valor;
+        option.textContent = `${Math.round(i * 5)}%`;
+        select.appendChild(option);
+    }
+    select.value = "0.05";
+}
+
+function numero(id){
+    return Number(document.getElementById(id)?.value) || 0;
+}
+
+function ganho(regra, attrs){
+    return regra.base + (attrs[regra.attr] || 0);
+}
+
+function calcularMaximos(){
+    const attrs = {
+        for: numero("for"),
+        dex: numero("dex"),
+        con: numero("con"),
+        int: numero("int"),
+        car: numero("car")
+    };
+    const fortitude = numero("periciaFortitude");
+    const classe = document.getElementById("classe").value || "Guerreiro";
+    const afinidade = Number(document.getElementById("afinidade").value) || 0;
+    const passos = Math.max(0, Math.round(afinidade / 0.05));
+
+    const iniciais = {
+        pv: 10 + (attrs.con * 2) + fortitude,
+        pe: 7 + attrs.dex + attrs.int,
+        san: 5 + (attrs.int * 2) + attrs.car,
+        def: 10 + attrs.con
+    };
+
+    const maximos = { ...iniciais };
+    if(passos >= 1){
+        maximos.pv += ganho(bonusInicial.pv, attrs);
+        maximos.pe += ganho(bonusInicial.pe, attrs);
+        maximos.san += ganho(bonusInicial.san, attrs);
+    }
+
+    const extras = Math.max(0, passos - 1);
+    const classeRegra = classeGanhos[classe] || classeGanhos.Guerreiro;
+    maximos.pv += extras * ganho(classeRegra.pv, attrs);
+    maximos.pe += extras * ganho(classeRegra.pe, attrs);
+    maximos.san += extras * ganho(classeRegra.san, attrs);
+
+    return maximos;
+}
+
+function atualizarCalculadora(){
+    const maximos = calcularMaximos();
+    document.getElementById("pvMaxView").innerText = maximos.pv;
+    document.getElementById("peMaxView").innerText = maximos.pe;
+    document.getElementById("sanMaxView").innerText = maximos.san;
+    document.getElementById("defView").innerText = maximos.def;
+}
+
+function aplicarMaximos(){
+    const maximos = calcularMaximos();
+    setMaximo("pv", maximos.pv);
+    setMaximo("pe", maximos.pe);
+    setMaximo("san", maximos.san);
+    document.getElementById("def").value = maximos.def;
+    statusIds.forEach(atualizarBarra);
+    salvar();
+}
+
+function setMaximo(id, valor){
+    const atual = document.getElementById(id);
+    const max = document.getElementById(`${id}Max`);
+    const anteriorMax = Number(max.value) || 0;
+    max.value = valor;
+
+    if(!Number(atual.value) || Number(atual.value) === anteriorMax || Number(atual.value) > valor){
+        atual.value = valor;
+    }
+}
+
+function salvar(){
+    const dados = {};
+    campos.forEach(c => dados[c.id] = c.value);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(dados));
+}
+
+function carregar(){
+    const dados = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+    campos.forEach(c => {
+        if(Object.prototype.hasOwnProperty.call(dados, c.id)) c.value = dados[c.id];
+    });
+    atualizarCalculadora();
+    statusIds.forEach(atualizarBarra);
+    atualizarModoEdicao();
+}
+
+function limpar(){
+    localStorage.removeItem(STORAGE_KEY);
+    campos.forEach(c => c.value = "");
+    document.getElementById("classe").value = "Guerreiro";
+    document.getElementById("afinidade").value = "0.05";
+    document.getElementById("for").value = 1;
+    document.getElementById("dex").value = 2;
+    document.getElementById("con").value = 3;
+    document.getElementById("int").value = 4;
+    document.getElementById("car").value = 5;
+    periciaIds.forEach(id => document.getElementById(id).value = 0);
+    atualizarCalculadora();
+    aplicarMaximos();
+    atualizarModoEdicao();
+}
+
+function alterar(id, valor){
+    const input = document.getElementById(id);
+    const max = numero(`${id}Max`);
+    let atual = Number(input.value) || 0;
+    atual += valor;
+    if(atual < 0) atual = 0;
+    if(max && atual > max) atual = max;
+    input.value = atual;
+    atualizarBarra(id);
+    salvar();
+}
+
+function textoMaluco(texto){
+    const chars = "!@#$%&*()_+=-?<>/[]{}ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    return texto.split("").map(l => Math.random() < 0.3 ? chars[Math.floor(Math.random() * chars.length)] : l).join("");
+}
+
+function iniciarLoopInsano(estadoEl) {
+    if (intervaloInsano) return;
+    intervaloInsano = setInterval(() => {
+        estadoEl.innerText = textoMaluco("INSANO");
+    }, 120);
+}
+
+function pararLoopInsano() {
+    if (!intervaloInsano) return;
+    clearInterval(intervaloInsano);
+    intervaloInsano = null;
+}
+
+function atualizarBarra(id){
+    const valor = numero(id);
+    const max = Math.max(1, numero(`${id}Max`));
+    const barra = document.getElementById(`${id}-bar`);
+    const texto = document.getElementById(`${id}-text`);
+    const estadoEl = document.getElementById(`${id}-estado`);
+    let porcentagem = Math.min(100, Math.max(0, (valor / max) * 100));
+
+    barra.style.width = `${porcentagem}%`;
+    barra.style.filter = porcentagem <= 25 ? "brightness(1.6)" : "none";
+    texto.innerText = `${valor} / ${numero(`${id}Max`)}`;
+
+    let estado = "";
+    let classe = "";
+
+    if(id === "pv"){
+        if(porcentagem > 50){ estado = "Estável"; classe = "estavel"; }
+        else if(porcentagem > 15){ estado = "Ferido"; classe = "ferido"; }
+        else if(porcentagem > 0){ estado = "Gravemente Ferido"; classe = "grave"; }
+        else{ estado = "Incapacitado"; classe = "morrendo"; }
+    }
+
+    if(id === "pe"){
+        if(porcentagem > 50){ estado = "Disposto"; classe = "estavel"; }
+        else if(porcentagem > 15){ estado = "Cansado"; classe = "ferido"; }
+        else if(porcentagem > 0){ estado = "Exausto"; classe = "grave"; }
+        else{ estado = "Incapacitado"; classe = "morrendo"; }
+    }
+
+    if(id === "san"){
+        if(porcentagem > 50){ estado = "Estável"; classe = "estavel"; pararLoopInsano(); }
+        else if(porcentagem > 15){ estado = "Louco"; classe = "ferido"; pararLoopInsano(); }
+        else if(porcentagem > 0){ estado = "INSANO"; classe = "grave"; iniciarLoopInsano(estadoEl); }
+        else{ estado = "Colapso"; classe = "morrendo"; pararLoopInsano(); }
+    }
+
+    if(!(id === "san" && porcentagem > 0 && porcentagem <= 15)){
+        estadoEl.innerText = estado;
+    }
+    estadoEl.className = `estado ${classe}`;
+}
+
+function atualizarPericiasVisiveis(){
+    periciaIds.forEach(id => {
+        const campo = document.getElementById(id);
+        const wrapper = document.querySelector(`[data-skill-id="${id}"]`);
+        if(!campo || !wrapper) return;
+        const valor = Number(campo.value) || 0;
+        wrapper.classList.toggle("hidden-skill", !modoEdicao && valor === 0);
+    });
+}
+
+function atualizarModoEdicao(){
+    const editarBtn = document.getElementById("editarBtn");
+    editarBtn.classList.toggle("active", modoEdicao);
+    editarBtn.setAttribute("aria-pressed", String(modoEdicao));
+
+    campos.forEach(campo => {
+        if(camposStatusLiberados.includes(campo.id)){
+            campo.disabled = false;
+            return;
+        }
+
+        campo.disabled = !modoEdicao;
+    });
+
+    if(aplicarMaximosBtn) aplicarMaximosBtn.disabled = !modoEdicao;
+    atualizarPericiasVisiveis();
+}
+
+function alternarEdicao(){
+    modoEdicao = !modoEdicao;
+    atualizarModoEdicao();
+    salvar();
+}
+
+function exportarFicha(){
+    salvar();
+    const dados = localStorage.getItem(STORAGE_KEY) || "{}";
+    const blob = new Blob([dados], { type:"application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `segredos-ocultos-${document.getElementById("nome").value || "ficha"}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+function importarFicha(){
+    document.getElementById("arquivoImportacao").click();
+}
+
+document.getElementById("arquivoImportacao").addEventListener("change", event => {
+    const file = event.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+        localStorage.setItem(STORAGE_KEY, reader.result);
+        carregar();
+    };
+    reader.readAsText(file);
+    event.target.value = "";
+});
+
+campos.forEach(c => {
+    c.addEventListener("input", () => {
+        atualizarCalculadora();
+        if(c.id.endsWith("Max") || statusIds.includes(c.id)) statusIds.forEach(atualizarBarra);
+        atualizarPericiasVisiveis();
+        salvar();
+    });
+    c.addEventListener("change", () => {
+        atualizarCalculadora();
+        atualizarPericiasVisiveis();
+        salvar();
+    });
+});
+
+document.querySelectorAll("button").forEach(btn => {
+    btn.addEventListener("click", function(e){
+        const ripple = document.createElement("span");
+        ripple.classList.add("ripple");
+        const rect = btn.getBoundingClientRect();
+        ripple.style.left = `${e.clientX - rect.left}px`;
+        ripple.style.top = `${e.clientY - rect.top}px`;
+        btn.appendChild(ripple);
+        setTimeout(() => ripple.remove(), 600);
+    });
+});
+
+window.onload = function(){
+    preencherAfinidades();
+    atualizarCalculadora();
+    if(localStorage.getItem(STORAGE_KEY)){
+        carregar();
+    } else {
+        aplicarMaximos();
+    }
+    atualizarModoEdicao();
+};
+</script>
+</body>
+</html>
